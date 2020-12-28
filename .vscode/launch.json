@@ -1,0 +1,30 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Python: Current File",
+            "type": "python",
+            "request": "launch",
+            "program": "${file}",
+            "console": "integratedTerminal",
+            "args": [
+                "--bedHasHeader",
+                "True",
+                "--bmatHasHeader",
+                "True",
+                "--bed",
+                "Bed2MpmatFaker/test/20200611-293T-EMX1-Detect-seq_pRBS.bed",
+                "--bmat",
+                "/Users/mac/mac_data2/FilesForTest/bmat/293T-bat_VEGFA-All-PD_rep1_hg38.MAPQ20.bmat",
+                "--genome",
+                "/Users/mac/Nutstore/Coding/github/snakepipes_bioinformatics_hermanzhaozzzz/genome_fa/genome_ucsc_hg38.fa",
+                "--output_mpmat",
+                "~/Downloads/test.mpmat",
+                "--extend_length_PAM_term",
+                "0",
+                "--extend_length_far_end_term_from_PAM",
+                "5"
+            ]
+        }
+    ]
+}

@@ -1,0 +1,1 @@
+~/mac_data2/FilesForTest/bam
