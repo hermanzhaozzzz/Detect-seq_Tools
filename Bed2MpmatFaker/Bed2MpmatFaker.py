@@ -9,6 +9,14 @@ import pandas as pd
 import pysam
 from Bio import SeqIO
 
+logging.basicConfig(
+    level=(4 - 30) * 10,
+    format="%(levelname)-5s @ %(asctime)s: %(message)s ",
+    datefmt="%Y-%m-%d %H:%M:%S",
+    stream=sys.stderr,
+    filemode="w",
+)
+
 
 class siteIndex(object):
     """
@@ -270,6 +278,10 @@ def query_region_bmat_info(bmat_file, site_index_list, genome_order_dict):
     query_res_dict = {"site_index_list": []}
 
     while bmat_line != "":
+        if type(bmat_line) == str:
+            pass
+        else:
+            bmat_line = bmat_line.decode(encoding="utf8")
         bmat_line_list = bmat_line.strip().split("\t")
         bmat_site_index = "_".join(bmat_line_list[0:3])
 
@@ -315,13 +327,15 @@ def query_region_bmat_info(bmat_file, site_index_list, genome_order_dict):
 
 if __name__ == "__main__":
     # BED_PATH = "Bed2MpmatFaker/test/20200611-293T-EMX1-Detect-seq_pRBS.bed"
-    # BMAT_PATH = "/Users/mac/mac_data2/FilesForTest/bmat/293T-bat_VEGFA-All-PD_rep1_hg38.MAPQ20.bmat"
+    # # BMAT_PATH = "/Users/mac/mac_data2/FilesForTest/bmat/293T-bat_VEGFA-All-PD_rep1_hg38.MAPQ20.bmat"
+    # BMAT_PATH = "/Users/mac/mac_data2/FilesForTest/bmat/293T-bat_VEGFA-All-PD_rep1_hg38.select.C.bmat.gz"
     # REF_PATH = "/Users/mac/Nutstore/Coding/github/snakepipes_bioinformatics_hermanzhaozzzz/genome_fa/genome_ucsc_hg38.fa"
-    # bmatHasHeader = True
+    # bmatHasHeader = False
     # bedHasHeader = True
     # OUT_MPMAT = "/Users/mac/Downloads/test.txt"
     # farTermExtend = 0
     # pamTermExtend = 0
+
     # parse params
     parser = parser()
     BED_PATH = parser.bed
@@ -332,6 +346,7 @@ if __name__ == "__main__":
     OUT_MPMAT = parser.output_mpmat
     farTermExtend = parser.extend_length_far_end_term_from_PAM
     pamTermExtend = parser.extend_length_PAM_term
+
     # load ref_fasta as dict
     REF_FA = load_reference_fasta_as_dict(ref_fasta_path=REF_PATH, log_verbose=30)
     # load bmat file
@@ -465,9 +480,15 @@ if __name__ == "__main__":
                         passTest=",".join(["Pass"] * len(site_index_list)),
                     )
                 )
-                print(mpmat_line)
+                logging.debug("DEBUG: " + mpmat_line)
                 out_mpmat.write(mpmat_line)
-print("finished")
+logging.debug("The program done!")
+
+
+# logging.info("info 信息")
+# logging.warning("warning 信息")
+# logging.error("error 信息")
+# logging.critical("critial 信息")
 
 bmat_file.close()
 out_mpmat.close()
