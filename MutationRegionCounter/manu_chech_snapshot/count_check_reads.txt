@@ -1,0 +1,413 @@
+# 01_V-ontarget-minus-R2-fwd
+
+Read name = E00490:581:H52CJCCX2:4:2108:14458:20208_1:N:0:ATCCAA
+Sample = VEGFA-All-PD_rep1
+Read group = VEGFA-All-PD_rep1
+Read length = 150bp
+----------------------
+Mapping = Primary @ MAPQ 42
+Reference span = chr6:43,770,716-43,770,865 (+) = 150bp
+Cigar = 150M
+Clipping = None
+----------------------
+Mate is mapped = yes
+Mate start = chr6:43770743 (-)
+Insert size = 178
+Second in pair
+Pair orientation = F2R1
+----------------------
+MC = 150M
+PG = MarkDuplicates
+XG = GA
+NM = 6
+XM = .X...X...X.....Z......X.....X................ZX..ZX.ZX.ZX...X.HH..Z.ZX
+.ZX.Z.H..Z.ZXH..XHHH..ZX.H...Z.Z...ZX.HH.ZXHH.hh.hhhhH..ZXHH...Z.ZX.Z.
+.Z....X...
+
+MQ = 42
+XR = GA
+Hidden tags: MD, RGLocation = chr6:43,770,849
+Base = G @ QV 41
+
+
+# 02_V-ontarget-minus-R1-rev
+
+Read name = E00454:613:H527LCCX2:6:1209:19238:25534_1:N:0:ATCCAA
+Sample = VEGFA-All-PD_rep1
+Read group = VEGFA-All-PD_rep1
+Read length = 150bp
+----------------------
+Mapping = Primary @ MAPQ 40
+Reference span = chr6:43,770,699-43,770,848 (-) = 150bp
+Cigar = 150M
+Clipping = None
+----------------------
+Mate is mapped = yes
+Mate start = chr6:43770687 (+)
+Insert size = -161
+First in pair
+Pair orientation = F2R1
+----------------------
+MC = 150M
+PG = MarkDuplicates
+XG = GA
+NM = 10
+XM = ..X..Z.Z..X..ZX...X...X...X.....Z......X.....X................ZX..ZX.Z
+X.ZX...X.HH..Z.ZX.ZX.Z.H..Z.ZXH..XHHH..ZX.H...Z.Z...ZX.HH.ZXhh.hh.hhhh
+H..ZXHH...
+
+MQ = 40
+XR = CT
+Hidden tags: MD, RGLocation = chr6:43,770,834
+Base = A @ QV 41
+
+
+# 03_V-ontarget-minus-R2-fwd
+
+Read name = E00490:581:H52CJCCX2:4:2216:12540:34535_1:N:0:ATCCAA
+Sample = VEGFA-All-PD_rep1
+Read group = VEGFA-All-PD_rep1
+Read length = 150bp
+----------------------
+Mapping = Primary @ MAPQ 42
+Reference span = chr6:43,770,727-43,770,876 (+) = 150bp
+Cigar = 150M
+Clipping = None
+----------------------
+Mate is mapped = yes
+Mate start = chr6:43770760 (-)
+Insert size = 184
+Second in pair
+Pair orientation = F2R1
+----------------------
+MC = 150M
+PG = MarkDuplicates
+XG = GA
+NM = 7
+XM = ....Z......X.....X................ZX..ZX.ZX.ZX...X.HH..Z.ZX.ZX.Z.H..Z.
+ZXH..XHHH..ZX.H...Z.Z...ZX.HH.ZXHH.hh.hhhhH..ZXHH...Z.ZX.Z..Z....X....
+.....Z....
+
+MQ = 42
+XR = GA
+Hidden tags: MD, RGLocation = chr6:43,770,832
+Base = A @ QV 27
+
+
+# 04_V-ontarget-minus-R1-rev
+
+Read name = E00454:613:H527LCCX2:6:1101:7090:2346
+Sample = VEGFA-All-PD_rep1
+Read group = VEGFA-All-PD_rep1
+Read length = 147bp
+----------------------
+Mapping = Primary @ MAPQ 60
+Reference span = chr6:43,770,748-43,770,893 (-) = 146bp
+Cigar = 94M1I52M
+Clipping = None
+----------------------
+Mate is mapped = yes
+Mate start = chr6:43770715 (+)
+Insert size = -178
+First in pair
+Pair orientation = F2R1
+----------------------
+MC = 116M34S
+PG = MarkDuplicates
+NM = 8
+AS = 104
+XS = 19
+Hidden tags: MD, RGLocation = chr6:43,770,807
+Base = C @ QV 32
+
+
+
+# 05_V-Site2-Detect-off-target-3-plus-R1-fwd
+
+Read name = E00454:613:H527LCCX2:6:2108:21186:46244_1:N:0:ATCCAA
+Sample = VEGFA-All-PD_rep1
+Read group = VEGFA-All-PD_rep1
+Read length = 150bp
+----------------------
+Mapping = Primary @ MAPQ 40
+Reference span = chr11:69,704,102-69,704,251 (+) = 150bp
+Cigar = 150M
+Clipping = None
+----------------------
+Mate is mapped = yes
+Mate start = chr11:69704216 (-)
+Insert size = 264
+First in pair
+Pair orientation = F1R2
+----------------------
+MC = 149M
+PG = MarkDuplicates
+XG = CT
+NM = 9
+XM = .H....Z.......H..H...HH.XZ.HHHHXZ.H.H.H.hhh.h.h.h.hHX..HH.XZ..HHHX..HH
+HX..HHHHH.HHXZ...HXZ...X...X...Z..Z..H..H....HHX..XZ.......HHXZ.HHX...
+XZ...Z....
+
+MQ = 40
+XR = CT
+Hidden tags: MD, RGLocation = chr11:69,704,154
+Base = C @ QV 41
+
+
+# 06_V-Site2-Detect-off-target-3-plus-R1-fwd
+
+Read name = E00454:613:H527LCCX2:6:2117:15625:7532_1:N:0:ATCCAA
+Sample = VEGFA-All-PD_rep1
+Read group = VEGFA-All-PD_rep1
+Read length = 150bp
+----------------------
+Mapping = Primary @ MAPQ 42
+Reference span = chr11:69,704,103-69,704,252 (+) = 150bp
+Cigar = 150M
+Clipping = None
+----------------------
+Mate is mapped = yes
+Mate start = chr11:69704370 (-)
+Insert size = 418
+First in pair
+Pair orientation = F1R2
+----------------------
+MC = 150M
+PG = MarkDuplicates
+XG = CT
+NM = 3
+XM = H....Z.......H..H...HH.XZ.HHHHXZ.H.H.H.HHH.h.h.H.HHXz.HH.XZ..HHHX..HHH
+X..HHHHH.HHXZ...HXZ...X...X...Z..Z..H..H....HHX..XZ.......HHXZ.HHX...X
+Z...Z....X
+
+MQ = 42
+XR = CT
+Hidden tags: MD, RGLocation = chr11:69,704,157
+Base = C @ QV 41
+
+
+# 07_V-Site2-Detect-off-target-3-plus-R2-rev
+
+Read name = E00454:613:H527LCCX2:6:2203:25763:11945_1:N:0:ATCCAA
+Sample = VEGFA-All-PD_rep1
+Read group = VEGFA-All-PD_rep1
+Read length = 150bp
+----------------------
+Mapping = Primary @ MAPQ 42
+Reference span = chr11:69,704,075-69,704,224 (-) = 150bp
+Cigar = 150M
+Clipping = None
+----------------------
+Mate is mapped = yes
+Mate start = chr11:69704053 (+)
+Insert size = -171
+Second in pair
+Pair orientation = F1R2
+----------------------
+MC = 150M
+PG = MarkDuplicates
+XG = CT
+NM = 8
+XM = ........HHH....H.HXZ...H....H....Z.......H..H...HH.XZ.HHHHXZ.H.H.H.hhh
+.h.h.h.HhXZ.Hh.XZ..HHHX..HHHX..HHHHH.HHXZ...HXZ...X...X...Z..Z..H..H..
+..HHX..XZ.
+
+MQ = 42
+XR = GA
+Hidden tags: MD, RGLocation = chr11:69,704,142
+Base = T @ QV 41
+
+
+
+# 08_V-Site2-Detect-off-target-3-plus-R2-rev
+
+Read name = E00490:581:H52CJCCX2:4:2215:5528:45452_1:N:0:ATCCAA
+Sample = VEGFA-All-PD_rep1
+Read group = VEGFA-All-PD_rep1
+Read length = 150bp
+----------------------
+Mapping = Primary @ MAPQ 42
+Reference span = chr11:69,704,134-69,704,283 (-) = 150bp
+Cigar = 150M
+Clipping = None
+----------------------
+Mate is mapped = yes
+Mate start = chr11:69703872 (+)
+Insert size = -411
+Second in pair
+Pair orientation = F1R2
+----------------------
+MC = 150M
+PG = MarkDuplicates
+XG = CT
+NM = 3
+XM = Z.H.H.H.HHH.H.h.H.HHXZ.HH.XZ..HHHX..HHHX..HHHHH.HHXZ...HXZ...X...X...Z
+..Z..H..H....HHX..XZ.......HHXZ.HHX...XZ...Z....X..Z............HH.Z.H
+....Z..XZ.
+
+MQ = 42
+XR = GA
+Hidden tags: MD, RGLocation = chr11:69,704,151
+Base = A @ QV 12
+
+
+# 09_V-Site2-Detect-off-target-28-minus-R1-rev
+
+Read name = E00454:613:H527LCCX2:6:1215:13372:72754_1:N:0:ATCCAA
+Sample = VEGFA-All-PD_rep1
+Read group = VEGFA-All-PD_rep1
+Read length = 150bp
+----------------------
+Mapping = Primary @ MAPQ 24
+Reference span = chr15:75,758,686-75,758,836 (-) = 151bp
+Cigar = 130M1D20M
+Clipping = None
+----------------------
+Mate is mapped = yes
+Mate start = chr15:75758553 (+)
+Insert size = -283
+First in pair
+Pair orientation = F2R1
+----------------------
+MC = 150M
+PG = MarkDuplicates
+XG = GA
+NM = 5
+XM = .ZXHhHh..Hh.H........XH.......Z........X.H.H.H.ZXH.H.H.HHH..X..XH...XH
+..H.H..H.H......Z.......Z.....X.H..ZXHHH..XH.H.HHHHHH..XH.H.HHHHHH.ZXH
+...H...X.H
+
+MQ = 24
+XR = CT
+Hidden tags: MD, RGLocation = chr15:75,758,692
+Base = A @ QV 41
+
+
+
+
+# 10_V-Site2-Detect-off-target-28-minus-R1-rev
+
+Read name = E00490:581:H52CJCCX2:4:1108:18132:11171_1:N:0:ATCCAA
+Sample = VEGFA-All-PD_rep1
+Read group = VEGFA-All-PD_rep1
+Read length = 150bp
+----------------------
+Mapping = Primary @ MAPQ 42
+Reference span = chr15:75,758,627-75,758,776 (-) = 150bp
+Cigar = 150M
+Clipping = None
+----------------------
+Mate is mapped = yes
+Mate start = chr15:75758608 (+)
+Insert size = -168
+First in pair
+Pair orientation = F2R1
+----------------------
+MC = 150M
+PG = MarkDuplicates
+XG = GA
+NM = 5
+XM = HH.H..H.Z.HH...HHH..X..XH.H.ZXH...H.HHHHH.Z...X.HH....zx....zXHHhH.HHh
+.H........XH.......Z........X.H.H.H.ZXH.H.H.HHH..X..XH...XH..H.H..H.H.
+.....Z....
+
+MQ = 42
+XR = CT
+Hidden tags: MD, RGLocation = chr15:75,758,677
+Base = C @ QV 41
+
+
+# 11_V-Site2-Detect-off-target-28-minus-R1-rev
+
+Read name = E00454:613:H527LCCX2:6:1223:16467:15004_1:N:0:ATCCAA
+Sample = VEGFA-All-PD_rep1
+Read group = VEGFA-All-PD_rep1
+Read length = 150bp
+----------------------
+Mapping = Primary @ MAPQ 42
+Reference span = chr15:75,758,660-75,758,809 (-) = 150bp
+Cigar = 150M
+Clipping = None
+----------------------
+Mate is mapped = yes
+Mate start = chr15:75758540 (+)
+Insert size = -269
+First in pair
+Pair orientation = F2R1
+----------------------
+MC = 150M
+PG = MarkDuplicates
+XG = GA
+NM = 5
+XM = .H.HHHHH.Z...X.HH....ZX....ZxH.Hh.HHh.h........XH.......Z........X.H.H
+.H.ZXH.H.H.HHH..X..XH...XH..H.H..H.H......Z.......Z.....X.H..ZXHHH..XH
+.H.HHHHHH.
+
+MQ = 42
+XR = CT
+Hidden tags: MD, RGLocation = chr15:75,758,700
+Base = C @ QV 41
+
+# 
+
+Read name = E00490:581:H52CJCCX2:4:1221:20151:61011_1:N:0:ATCCAA
+Sample = VEGFA-All-PD_rep1
+Read group = VEGFA-All-PD_rep1
+Read length = 150bp
+----------------------
+Mapping = Primary @ MAPQ 42
+Reference span = chr15:75,758,549-75,758,698 (+) = 150bp
+Cigar = 150M
+Clipping = None
+----------------------
+Mate is mapped = yes
+Mate start = chr15:75758769 (-)
+Insert size = 371
+Second in pair
+Pair orientation = F2R1
+----------------------
+MC = 150M
+PG = MarkDuplicates
+XG = GA
+NM = 2
+XM = ..Z.....X..H....XH.Z.....ZX.....H........ZXH....XH......HH...X..HH.H.H
+H.....X.HH.H..H.Z.HH...HHH..X..XH.H.ZXH...H.HHHHH.Z...X.HH....ZX....ZX
+HHhH.hHH.H
+
+MQ = 42
+XR = GA
+Hidden tags: MD, RGLocation = chr15:75,758,697
+Base = T @ QV 41
+
+
+# 
+
+Read name = E00490:581:H52CJCCX2:4:1108:18132:11171_1:N:0:ATCCAA
+Sample = VEGFA-All-PD_rep1
+Read group = VEGFA-All-PD_rep1
+Read length = 150bp
+----------------------
+Mapping = Primary @ MAPQ 42
+Reference span = chr15:75,758,609-75,758,758 (+) = 150bp
+Cigar = 150M
+Clipping = None
+----------------------
+Mate is mapped = yes
+Mate start = chr15:75758626 (-)
+Insert size = 168
+Second in pair
+Pair orientation = F2R1
+----------------------
+MC = 150M
+PG = MarkDuplicates
+XG = GA
+NM = 5
+XM = .X..HH.H.HH.....X.HH.H..H.Z.HH...HHH..X..XH.H.ZXH...H.HHHHH.Z...X.HH..
+..zx....zXHHhH.HHh.H........XH.......Z........X.H.H.H.ZXH.H.H.HHH..X..
+XH...XH..H
+
+MQ = 42
+XR = GA
+Hidden tags: MD, RGLocation = chr15:75,758,695
+Base = G @ QV 41
+
