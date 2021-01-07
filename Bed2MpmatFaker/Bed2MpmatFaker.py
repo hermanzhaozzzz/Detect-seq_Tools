@@ -359,7 +359,7 @@ if __name__ == "__main__":
     if bmatHasHeader:
         fake_var = next(bmat_file)
 
-    # TODO 判断bed是否是空的,如果是空的，直接返回空mpmat，如果不是，继续
+    # 判断bed是否是空的,如果是空的，直接返回空mpmat，如果不是，继续
     with open(BED_PATH, "r") as f:
         if f.readlines() == []:
             bl_bed_empty = True
