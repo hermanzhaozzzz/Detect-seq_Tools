@@ -1,1 +1,6 @@
-the bed file is empty!the bed file is empty!the bed file is empty!
+the bed file is empty!the bed file is empty!the bed file is empty!chr1	20893	20913	9	0	0	chr1_20893_C.,chr1_20895_C.,chr1_20897_C.,chr1_20898_C.,chr1_20899_C.,chr1_20902_C.,chr1_20905_C.,chr1_20908_C.,chr1_20913_C.	0,0,0,0,0,0,0,0,0	0,0,0,0,0,0,0,0,0	0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0	False,False,False,False,False,False,False,False,False	0,0,0,0,0,0,0,0,0	Pass,Pass,Pass,Pass,Pass,Pass,Pass,Pass,Pass
+chr1	36556	36572	4	0	0	chr1_36556_G.,chr1_36561_G.,chr1_36570_G.,chr1_36572_G.	0,0,0,0	0,0,0,0	0.0,0.0,0.0,0.0	False,False,False,False	0,0,0,0	Pass,Pass,Pass,Pass
+chr1	44635	44640	2	0	0	chr1_44635_G.,chr1_44640_G.	0,0	0,0	0.0,0.0	False,False	0,0	Pass,Pass
+chr1	49360	49363	2	0	0	chr1_49360_C.,chr1_49363_C.	0,0	0,0	0.0,0.0	False,False	0,0	Pass,Pass
+chr1	56107	56117	3	0	0	chr1_56107_G.,chr1_56116_G.,chr1_56117_G.	0,0,0	1,1,1	0.0,0.0,0.0	False,False,False	0,0,0	Pass,Pass,Pass
+chr1	75184	75189	3	0	0	chr1_75184_C.,chr1_75185_C.,chr1_75189_C.	0,0,0	0,0,0	0.0,0.0,0.0	False,False,False	0,0,0	Pass,Pass,Pass

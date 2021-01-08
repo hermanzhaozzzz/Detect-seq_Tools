@@ -422,6 +422,7 @@ if __name__ == "__main__":
                     # seq and abs_index of bases
                     # 从REF_FA的dict中将对应这一行bed信息的region的seq切片出来
                     seq = REF_FA[chrom][start - 1 : end]
+                    seq = seq.upper()
                     # 生成seq对应的染色体位置的绝对index
                     seq_idx = np.arange(start, end + 1)
                     # form <site_index_list>
@@ -429,6 +430,7 @@ if __name__ == "__main__":
                     # like [chr1_20452_CT, chr1_20467_C., chr1_20474_CT]
                     # C don't mut to T --> C.
                     # C mut to T --> CT
+
                     site_index_list = []
                     for idx, base in enumerate(seq):
                         # 调整start和end的值
@@ -452,82 +454,87 @@ if __name__ == "__main__":
                             )
                         )
                     # TODO 这里有问题，取出count数，如果count全为零的话应该直接返回mpmat，不用再算了！
-                    query_mut_info = query_region_bmat_info(
-                        bmat_file=bmat_file,
-                        site_index_list=site_index_list,
-                        genome_order_dict=REF_FA,
-                    )
-                    logging.debug("=" * 20)
-                    seqstr = "this seq: ", site_index_list
-                    logging.debug(seqstr)
-                    site_index_list_mut_count = []
-                    site_index_list_coverage = []
-                    for base in site_index_list:
-                        basestr = "this base:" + base
-                        logging.debug(basestr)
-                        try:
-                            dt_this_base = query_mut_info[base[:-3]].count_dict
-                            logging.debug(dt_this_base)
-                            site_index_list_mut_count.append(
-                                int(dt_this_base[base[-1]])
+                    if len(site_index_list) != 0:
+                        query_mut_info = query_region_bmat_info(
+                            bmat_file=bmat_file,
+                            site_index_list=site_index_list,
+                            genome_order_dict=REF_FA,
+                        )
+                        logging.debug("=" * 20)
+                        seqstr = "this seq: ", site_index_list
+                        logging.debug(seqstr)
+                        site_index_list_mut_count = []
+                        site_index_list_coverage = []
+                        for base in site_index_list:
+                            basestr = "this base:" + base
+                            logging.debug(basestr)
+                            try:
+                                dt_this_base = query_mut_info[base[:-3]].count_dict
+                                logging.debug(dt_this_base)
+                                site_index_list_mut_count.append(
+                                    int(dt_this_base[base[-1]])
+                                )
+                                coverage = 0
+                                for key in dt_this_base:
+                                    coverage += int(dt_this_base[key])
+                                site_index_list_coverage.append(int(coverage))
+                            except:
+                                site_index_list_mut_count.append(0)
+                                site_index_list_coverage.append(0)
+
+                        # logging.debug("=" * 20)
+                        ls_ratio = []
+                        for idx in range(len(site_index_list)):
+                            if site_index_list_coverage[idx] == 0:
+                                ls_ratio.append(0.0)
+                            else:
+                                ls_ratio.append(
+                                    site_index_list_mut_count[idx]
+                                    / (site_index_list_coverage[idx])
+                                )
+                        # logging.debug(ls_ratio)
+
+                        count_mut_site_in_tandom = len(site_index_list)
+                        for i in range(len(site_index_list_mut_count)):
+                            if site_index_list_mut_count[i] == 0:
+                                site_index_list[i] = site_index_list[i][:-1] + "."
+                                count_mut_site_in_tandom -= 1
+
+                        mpmat_line = (
+                            "{chrom}\t{start_tandom}\t{end_tandom}\t{count_tandom_site}\t".format(
+                                chrom=chrom,
+                                start_tandom=site_index_list[0].split("_")[1],
+                                end_tandom=site_index_list[-1].split("_")[1],
+                                count_tandom_site=len(site_index_list),
                             )
-                            coverage = 0
-                            for key in dt_this_base:
-                                coverage += int(dt_this_base[key])
-                            site_index_list_coverage.append(int(coverage))
-                        except:
-                            site_index_list_mut_count.append(0)
-                            site_index_list_coverage.append(0)
-
-                    # logging.debug("=" * 20)
-                    ls_ratio = []
-                    for idx in range(len(site_index_list)):
-                        if site_index_list_coverage[idx] == 0:
-                            ls_ratio.append(0.0)
-                        else:
-                            ls_ratio.append(
-                                site_index_list_mut_count[idx]
-                                / (site_index_list_coverage[idx])
+                            + "{count_mut_site_in_tandom}\t{count_SNP_site_in_tandom}\t".format(
+                                count_mut_site_in_tandom=count_mut_site_in_tandom,
+                                count_SNP_site_in_tandom=0,
                             )
-                    # logging.debug(ls_ratio)
+                            + "{mut_site_index}\t{mut_count_this_site}\t{mut_coverage_this_site}\t".format(
+                                mut_site_index=",".join(site_index_list),
+                                mut_count_this_site=",".join(
+                                    [str(i) for i in site_index_list_mut_count]
+                                ),
+                                mut_coverage_this_site=",".join(
+                                    [str(i) for i in site_index_list_coverage]
+                                ),
+                            )
+                            + "{mut_ratio_this_site}\t".format(
+                                mut_ratio_this_site=",".join([str(i) for i in ls_ratio])
+                            )
+                            + "{isSNP}\t{zeros}\t{passTest}\n".format(
+                                isSNP=",".join(["False"] * len(site_index_list)),
+                                zeros=",".join(["0"] * len(site_index_list)),
+                                passTest=",".join(["Pass"] * len(site_index_list)),
+                            )
+                        )
+                        logging.debug("DEBUG: " + mpmat_line)
+                        out_mpmat.write(mpmat_line)
+                    else:
+                        # 如果seq中没有要check的base，比如+没C或-没G就pass这个点
+                        pass
 
-                    count_mut_site_in_tandom = len(site_index_list)
-                    for i in range(len(site_index_list_mut_count)):
-                        if site_index_list_mut_count[i] == 0:
-                            site_index_list[i] = site_index_list[i][:-1] + "."
-                            count_mut_site_in_tandom -= 1
-
-                    mpmat_line = (
-                        "{chrom}\t{start_tandom}\t{end_tandom}\t{count_tandom_site}\t".format(
-                            chrom=chrom,
-                            start_tandom=site_index_list[0].split("_")[1],
-                            end_tandom=site_index_list[-1].split("_")[1],
-                            count_tandom_site=len(site_index_list),
-                        )
-                        + "{count_mut_site_in_tandom}\t{count_SNP_site_in_tandom}\t".format(
-                            count_mut_site_in_tandom=count_mut_site_in_tandom,
-                            count_SNP_site_in_tandom=0,
-                        )
-                        + "{mut_site_index}\t{mut_count_this_site}\t{mut_coverage_this_site}\t".format(
-                            mut_site_index=",".join(site_index_list),
-                            mut_count_this_site=",".join(
-                                [str(i) for i in site_index_list_mut_count]
-                            ),
-                            mut_coverage_this_site=",".join(
-                                [str(i) for i in site_index_list_coverage]
-                            ),
-                        )
-                        + "{mut_ratio_this_site}\t".format(
-                            mut_ratio_this_site=",".join([str(i) for i in ls_ratio])
-                        )
-                        + "{isSNP}\t{zeros}\t{passTest}\n".format(
-                            isSNP=",".join(["False"] * len(site_index_list)),
-                            zeros=",".join(["0"] * len(site_index_list)),
-                            passTest=",".join(["Pass"] * len(site_index_list)),
-                        )
-                    )
-                    logging.debug("DEBUG: " + mpmat_line)
-                    out_mpmat.write(mpmat_line)
 logging.debug("The program done!")
 
 bmat_file.close()
