@@ -381,7 +381,6 @@ if __name__ == "__main__":
             bl_bed_empty = False
 
     # parse bed file
-    print(bmatHasHeader, bedHasHeader)
     if bl_bed_empty == True:
         out_mpmat.write("the bed file is empty!")
     else:
@@ -467,8 +466,8 @@ if __name__ == "__main__":
                         basestr = "this base:" + base
                         logging.debug(basestr)
                         try:
-                            print(query_mut_info[base[:-3]].count_dict)
                             dt_this_base = query_mut_info[base[:-3]].count_dict
+                            logging.debug(dt_this_base)
                             site_index_list_mut_count.append(
                                 int(dt_this_base[base[-1]])
                             )
