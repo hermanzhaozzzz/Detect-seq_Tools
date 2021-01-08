@@ -453,7 +453,6 @@ if __name__ == "__main__":
                                 base2base=base2base,
                             )
                         )
-                    # TODO 这里有问题，取出count数，如果count全为零的话应该直接返回mpmat，不用再算了！
                     if len(site_index_list) != 0:
                         query_mut_info = query_region_bmat_info(
                             bmat_file=bmat_file,
