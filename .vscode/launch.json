@@ -15,7 +15,7 @@
                 "--bed",
                 // "/home/zhaohuanan/zhaohn_HD/3.project/25.2020-12_02_CBE_DetectSeq_paper_revise/snakepipes_Bed2MpmatFaker/bed/Detect-seq_VEGFA_293T_pRBS.bed",
                 // "/home/zhaohuanan/zhaohn_HD/3.project/25.2020-12_02_CBE_DetectSeq_paper_revise/snakepipes_Bed2MpmatFaker/bed/Digenome-seq_VEGFA_293T_pRBS.bed",
-                "/home/zhaohuanan/zhaohn_HD/3.project/25.2020-12_02_CBE_DetectSeq_paper_revise/snakepipes_Bed2MpmatFaker/bed/CasOFFinder_VEGFA_293T_pRBS.bed",
+                "/home/zhaohuanan/zhaohn_HD/3.project/25.2020-12_02_CBE_DetectSeq_paper_revise/snakepipes_Bed2MpmatFaker/bed/CasOFFinder_VEGFA_293T_pRBS.sorted.bed",
                 "--bmat",
                 // "/home/zhaohuanan/zhaohn_HD/3.project/25.2020-12_02_CBE_DetectSeq_paper_revise/bmat_select/Detect-seq_293T-bat_VEGFA-All-PD_rep1_hg38.MAPQ20_C.bmat.gz",
                 "/home/zhaohuanan/zhaohn_HD/3.project/25.2020-12_02_CBE_DetectSeq_paper_revise/bmat_select/Detect-seq_293T-bat_VEGFA-All-PD_rep1_hg38.MAPQ20_C.bmat.gz",

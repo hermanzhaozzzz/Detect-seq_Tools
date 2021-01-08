@@ -453,7 +453,7 @@ if __name__ == "__main__":
                                 base2base=base2base,
                             )
                         )
-                    if len(site_index_list) != 0:
+                    if len(site_index_list) != 0 and site_index_list != [""]:
                         query_mut_info = query_region_bmat_info(
                             bmat_file=bmat_file,
                             site_index_list=site_index_list,
