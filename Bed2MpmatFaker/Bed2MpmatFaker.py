@@ -271,6 +271,10 @@ def query_region_bmat_info(bmat_file, site_index_list, genome_order_dict):
     # init
     site_index = siteIndex(site_index_list[0])
     bmat_line = bmat_file.readline()
+    if type(bmat_line) == str:
+        pass
+    else:
+        bmat_line = bmat_line.decode(encoding="utf8")
 
     # define dict
     query_total_num = len(site_index_list)
@@ -278,10 +282,7 @@ def query_region_bmat_info(bmat_file, site_index_list, genome_order_dict):
     query_res_dict = {"site_index_list": []}
 
     while bmat_line != "":
-        if type(bmat_line) == str:
-            pass
-        else:
-            bmat_line = bmat_line.decode(encoding="utf8")
+
         bmat_line_list = bmat_line.strip().split("\t")
         bmat_site_index = "_".join(bmat_line_list[0:3])
 
@@ -303,9 +304,17 @@ def query_region_bmat_info(bmat_file, site_index_list, genome_order_dict):
                 # read new
                 site_index = siteIndex(site_index_list[query_site_num])
                 bmat_line = bmat_file.readline()
+                if type(bmat_line) == str:
+                    pass
+                else:
+                    bmat_line = bmat_line.decode(encoding="utf8")
 
         elif cmp_res == 1:
             bmat_line = bmat_file.readline()
+            if type(bmat_line) == str:
+                pass
+            else:
+                bmat_line = bmat_line.decode(encoding="utf8")
 
         elif cmp_res == -1:
             query_site_num += 1
@@ -321,6 +330,10 @@ def query_region_bmat_info(bmat_file, site_index_list, genome_order_dict):
                 # read new
                 site_index = siteIndex(site_index_list[query_site_num])
                 bmat_line = bmat_file.readline()
+                if type(bmat_line) == str:
+                    pass
+                else:
+                    bmat_line = bmat_line.decode(encoding="utf8")
 
     return query_res_dict
 
@@ -453,7 +466,7 @@ if __name__ == "__main__":
                                 base2base=base2base,
                             )
                         )
-                    if len(site_index_list) != 0:
+                    if len(site_index_list) != 0 and site_index_list != [""]:
                         query_mut_info = query_region_bmat_info(
                             bmat_file=bmat_file,
                             site_index_list=site_index_list,
