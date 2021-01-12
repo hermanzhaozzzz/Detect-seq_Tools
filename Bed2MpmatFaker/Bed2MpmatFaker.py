@@ -95,13 +95,13 @@ def parser():
     )
     args.add_argument(
         "--bedHasHeader",
-        type=bool,
+        type=str,
         required=True,
         help="True if bed has header, else False",
     )
     args.add_argument(
         "--bmatHasHeader",
-        type=bool,
+        type=str,
         required=True,
         help="True if bmat has header, else False",
     )
@@ -356,139 +356,185 @@ if __name__ == "__main__":
         bmat_file = open(BMAT_PATH, "r")
     # create output mpmat
     out_mpmat = open(OUT_MPMAT, "a")
+
+    # str to bool
+    if bedHasHeader == "False":
+        bedHasHeader = False
+    elif bedHasHeader == "True":
+        bedHasHeader = True
+    else:
+        raise ValueError("bedHasHeader must be True or False")
+    if bmatHasHeader == "False":
+        bmatHasHeader = False
+    elif bmatHasHeader == "True":
+        bmatHasHeader = True
+    else:
+        raise ValueError("bmatHasHeader must be True or False")
     if bmatHasHeader:
         fake_var = next(bmat_file)
-    # parse bed file
-    if bedHasHeader:
-        df = pd.read_csv(BED_PATH, sep="\t")
-    else:
-        df = pd.read_csv(BED_PATH, sep="\t", header=None)
 
-    df = df.iloc[:, 0:7]
-    df.columns = ["chrom", "start", "end", "name", "score", "strand"]
-    ls_chrom = ["chr%s" % i for i in list(range(1, 23)) + ["X", "Y", "M"]]
-    dt_chrom_bed_info = {}
-    for chrom in ls_chrom:
-        df_chrom = df[df["chrom"] == chrom]
-        df_chrom = df_chrom.sort_values(by=["start"])
-        df_chrom.index = range(df_chrom.shape[0])
-        dt_chrom_bed_info[chrom] = df_chrom
-
-    for chrom in ls_chrom:
-        if dt_chrom_bed_info[chrom].empty:
-            continue
+    # 判断bed是否是空的,如果是空的，直接返回空mpmat，如果不是，继续
+    with open(BED_PATH, "r") as f:
+        if f.readlines() == []:
+            bl_bed_empty = True
         else:
-            for row in range(dt_chrom_bed_info[chrom].shape[0]):
-                start = dt_chrom_bed_info[chrom].loc[row, "start"]
-                end = dt_chrom_bed_info[chrom].loc[row, "end"]
-                name = dt_chrom_bed_info[chrom].loc[row, "name"]
-                score = dt_chrom_bed_info[chrom].loc[row, "score"]
-                strand = dt_chrom_bed_info[chrom].loc[row, "strand"]
-                # seq and abs_index of bases
-                seq = REF_FA[chrom][start - 1 : end]
-                seq_idx = np.arange(start, end + 1)
-                # form site_index_list
-                site_index_list = []
-                for idx, base in enumerate(seq):
-                    if strand == "+":
-                        base2base = "CT"
-                        start -= farTermExtend
-                        end += pamTermExtend
-                    else:
-                        base2base = "GA"
-                        start -= pamTermExtend
-                        end += farTermExtend
-                    if strand == "+" and base == "C":
-                        base2base = "CT"
-                    elif strand == "-" and base == "G":
-                        base2base = "GA"
-                    else:
-                        continue
-                    site_index_list.append(
-                        "{chrom}_{abs_idx}_{base2base}".format(
-                            chrom=chrom, abs_idx=seq_idx[idx], base2base=base2base
+            bl_bed_empty = False
+
+    # parse bed file
+    if bl_bed_empty == True:
+        out_mpmat.write("the bed file is empty!")
+    else:
+        # 将bed读作Dataframe
+        if bedHasHeader:
+            df = pd.read_csv(BED_PATH, sep="\t")
+        else:
+            df = pd.read_csv(BED_PATH, sep="\t", header=None)
+        # 只取bed的前6列信息：BED6
+        df = df.iloc[:, 0:7]
+        df.columns = ["chrom", "start", "end", "name", "score", "strand"]
+        ls_chrom = ["chr%s" % i for i in list(range(1, 23)) + ["X", "Y", "M"]]
+
+        # 将每个 染色体 内的 bed信息 提取至词典中 供后续 按照 染色体 调用
+        dt_chrom_bed_info = {}
+
+        for chrom in ls_chrom:
+            df_chrom = df[df["chrom"] == chrom]
+            df_chrom = df_chrom.sort_values(by=["start"])
+            df_chrom.index = range(df_chrom.shape[0])
+            dt_chrom_bed_info[chrom] = df_chrom
+
+        for chrom in ls_chrom:
+            if dt_chrom_bed_info[chrom].empty:
+                # 如果 词典中，对应染色体的那部分bed是空的，就跳过，继续分析下一个染色体中的bed
+                continue
+            else:
+                # 对于某特定 染色体 中的bed
+                for row in range(dt_chrom_bed_info[chrom].shape[0]):
+                    # 遍历该Dataframe，每次取一行bed信息
+                    # 并指定 start、end、name、score、strand
+                    # 已知这一个bed区块的chrom信息
+                    # 则指定了chrom、start、end、name、score、strand
+                    start = dt_chrom_bed_info[chrom].loc[row, "start"]
+                    end = dt_chrom_bed_info[chrom].loc[row, "end"]
+                    name = dt_chrom_bed_info[chrom].loc[row, "name"]
+                    score = dt_chrom_bed_info[chrom].loc[row, "score"]
+                    strand = dt_chrom_bed_info[chrom].loc[row, "strand"]
+                    # seq and abs_index of bases
+                    # 从REF_FA的dict中将对应这一行bed信息的region的seq切片出来
+                    seq = REF_FA[chrom][start - 1 : end]
+                    seq = seq.upper()
+                    # 生成seq对应的染色体位置的绝对index
+                    seq_idx = np.arange(start, end + 1)
+                    # form <site_index_list>
+                    # It's a list
+                    # like [chr1_20452_CT, chr1_20467_C., chr1_20474_CT]
+                    # C don't mut to T --> C.
+                    # C mut to T --> CT
+
+                    site_index_list = []
+                    for idx, base in enumerate(seq):
+                        # 调整start和end的值
+                        # region为正向，就看正链REF中C的突变情况
+                        # region为反向，就看正链REF中G的突变情况，对应到反向链，其实就还是看C
+                        if strand == "+" and base == "C":
+                            base2base = "CT"
+                            start -= farTermExtend
+                            end += pamTermExtend
+                        elif strand == "-" and base == "G":
+                            base2base = "GA"
+                            start -= pamTermExtend
+                            end += farTermExtend
+                        else:
+                            continue
+                        site_index_list.append(
+                            "{chrom}_{abs_idx}_{base2base}".format(
+                                chrom=chrom,
+                                abs_idx=seq_idx[idx],
+                                base2base=base2base,
+                            )
                         )
-                    )
-
-                query_mut_info = query_region_bmat_info(
-                    bmat_file=bmat_file,
-                    site_index_list=site_index_list,
-                    genome_order_dict=REF_FA,
-                )
-                print("=" * 20)
-                print("this seq: ", site_index_list)
-                site_index_list_mut_count = []
-                site_index_list_coverage = []
-                for base in site_index_list:
-                    print("this base:", base)
-                    try:
-                        print(query_mut_info[base[:-3]].count_dict)
-                        dt_this_base = query_mut_info[base[:-3]].count_dict
-                        site_index_list_mut_count.append(int(dt_this_base[base[-1]]))
-                        coverage = 0
-                        for key in dt_this_base:
-                            coverage += int(dt_this_base[key])
-                        site_index_list_coverage.append(int(coverage))
-                    except:
-                        site_index_list_mut_count.append(0)
-                        site_index_list_coverage.append(0)
-
-                print("=" * 20)
-                ls_ratio = []
-                for idx in range(len(site_index_list)):
-                    if site_index_list_coverage[idx] == 0:
-                        ls_ratio.append(0.0)
-                    else:
-                        ls_ratio.append(
-                            site_index_list_mut_count[idx]
-                            / (site_index_list_coverage[idx])
+                    if len(site_index_list) != 0:
+                        query_mut_info = query_region_bmat_info(
+                            bmat_file=bmat_file,
+                            site_index_list=site_index_list,
+                            genome_order_dict=REF_FA,
                         )
-                print(ls_ratio)
+                        logging.debug("=" * 20)
+                        seqstr = "this seq: ", site_index_list
+                        logging.debug(seqstr)
+                        site_index_list_mut_count = []
+                        site_index_list_coverage = []
+                        for base in site_index_list:
+                            basestr = "this base:" + base
+                            logging.debug(basestr)
+                            try:
+                                dt_this_base = query_mut_info[base[:-3]].count_dict
+                                logging.debug(dt_this_base)
+                                site_index_list_mut_count.append(
+                                    int(dt_this_base[base[-1]])
+                                )
+                                coverage = 0
+                                for key in dt_this_base:
+                                    coverage += int(dt_this_base[key])
+                                site_index_list_coverage.append(int(coverage))
+                            except:
+                                site_index_list_mut_count.append(0)
+                                site_index_list_coverage.append(0)
 
-                count_mut_site_in_tandom = len(site_index_list)
-                for i in range(len(site_index_list_mut_count)):
-                    if site_index_list_mut_count[i] == 0:
-                        site_index_list[i] = site_index_list[i][:-1] + "."
-                        count_mut_site_in_tandom -= 1
+                        # logging.debug("=" * 20)
+                        ls_ratio = []
+                        for idx in range(len(site_index_list)):
+                            if site_index_list_coverage[idx] == 0:
+                                ls_ratio.append(0.0)
+                            else:
+                                ls_ratio.append(
+                                    site_index_list_mut_count[idx]
+                                    / (site_index_list_coverage[idx])
+                                )
+                        # logging.debug(ls_ratio)
 
-                mpmat_line = (
-                    "{chrom}\t{start_tandom}\t{end_tandom}\t{count_tandom_site}\t".format(
-                        chrom=chrom,
-                        start_tandom=site_index_list[0].split("_")[1],
-                        end_tandom=site_index_list[-1].split("_")[1],
-                        count_tandom_site=len(site_index_list),
-                    )
-                    + "{count_mut_site_in_tandom}\t{count_SNP_site_in_tandom}\t".format(
-                        count_mut_site_in_tandom=count_mut_site_in_tandom,
-                        count_SNP_site_in_tandom=0,
-                    )
-                    + "{mut_site_index}\t{mut_count_this_site}\t{mut_coverage_this_site}\t".format(
-                        mut_site_index=",".join(site_index_list),
-                        mut_count_this_site=",".join(
-                            [str(i) for i in site_index_list_mut_count]
-                        ),
-                        mut_coverage_this_site=",".join(
-                            [str(i) for i in site_index_list_coverage]
-                        ),
-                    )
-                    + "{mut_ratio_this_site}\t".format(
-                        mut_ratio_this_site=",".join([str(i) for i in ls_ratio])
-                    )
-                    + "{isSNP}\t{zeros}\t{passTest}\n".format(
-                        isSNP=",".join(["False"] * len(site_index_list)),
-                        zeros=",".join(["0"] * len(site_index_list)),
-                        passTest=",".join(["Pass"] * len(site_index_list)),
-                    )
-                )
-                logging.debug("DEBUG: " + mpmat_line)
-                out_mpmat.write(mpmat_line)
+                        count_mut_site_in_tandom = len(site_index_list)
+                        for i in range(len(site_index_list_mut_count)):
+                            if site_index_list_mut_count[i] == 0:
+                                site_index_list[i] = site_index_list[i][:-1] + "."
+                                count_mut_site_in_tandom -= 1
+
+                        mpmat_line = (
+                            "{chrom}\t{start_tandom}\t{end_tandom}\t{count_tandom_site}\t".format(
+                                chrom=chrom,
+                                start_tandom=site_index_list[0].split("_")[1],
+                                end_tandom=site_index_list[-1].split("_")[1],
+                                count_tandom_site=len(site_index_list),
+                            )
+                            + "{count_mut_site_in_tandom}\t{count_SNP_site_in_tandom}\t".format(
+                                count_mut_site_in_tandom=count_mut_site_in_tandom,
+                                count_SNP_site_in_tandom=0,
+                            )
+                            + "{mut_site_index}\t{mut_count_this_site}\t{mut_coverage_this_site}\t".format(
+                                mut_site_index=",".join(site_index_list),
+                                mut_count_this_site=",".join(
+                                    [str(i) for i in site_index_list_mut_count]
+                                ),
+                                mut_coverage_this_site=",".join(
+                                    [str(i) for i in site_index_list_coverage]
+                                ),
+                            )
+                            + "{mut_ratio_this_site}\t".format(
+                                mut_ratio_this_site=",".join([str(i) for i in ls_ratio])
+                            )
+                            + "{isSNP}\t{zeros}\t{passTest}\n".format(
+                                isSNP=",".join(["False"] * len(site_index_list)),
+                                zeros=",".join(["0"] * len(site_index_list)),
+                                passTest=",".join(["Pass"] * len(site_index_list)),
+                            )
+                        )
+                        logging.debug("DEBUG: " + mpmat_line)
+                        out_mpmat.write(mpmat_line)
+                    else:
+                        # 如果seq中没有要check的base，比如+没C或-没G就pass这个点
+                        pass
+
 logging.debug("The program done!")
-
-
-# logging.info("info 信息")
-# logging.warning("warning 信息")
-# logging.error("error 信息")
-# logging.critical("critial 信息")
 
 bmat_file.close()
 out_mpmat.close()
