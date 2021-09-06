@@ -9,6 +9,7 @@ sna*.err
 sna*.out
 job.srp*
 .DS_Store
+/*/.DS_Store
 .Rhistory
 .localized
 slurm-*.out
