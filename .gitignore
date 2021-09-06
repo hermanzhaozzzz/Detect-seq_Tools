@@ -13,3 +13,4 @@ job.srp*
 .Rhistory
 .localized
 slurm-*.out
+*/__pycache__/*
