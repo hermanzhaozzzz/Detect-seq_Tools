@@ -1,7 +1,7 @@
 import logging
 import sys
 
-import pysam
+import pandas as pd
 from Bio import SeqIO
 
 
@@ -218,22 +218,41 @@ def aligned_segment_get_reference_sequence(align, ref_genome_dict):
         return ref_genome_dict[align.reference_name][ref_start_idx : ref_end_idx + 1]
 
 
+def get_absolute_position(bowtie_table: str) -> pd.DataFrame:
+    """get region position from bowtie1 mapping standard output file
+
+    Args:
+        bowtie_table (str): path of standard output file (must use the same reference with load_reference_fasta_as_dict())
+
+    Returns:
+        pd.DataFrame: the absolution positions of aimed regions.
+        cols: [
+            "chrom",  # chromosome
+            "start",  # start (contain)
+            "stop",  # stop (contain)
+            "read_id",  # region name
+            "score",  # fake score
+            "strand",  # strand
+            "sequence",  # sequence (ref strand +)
+            ]
+    """
+    df = pd.read_csv(
+        bowtie_table,
+        sep="\t",
+        names=[
+            "read_id",
+            "strand",
+            "chrom",
+            "start",
+            "sequence",
+            "align_info",
+            "score",
+        ],
+        index_col=False,
+    )
+    df.insert(4, "stop", df["start"] + df.sequence.map(len), allow_duplicates=False)
+    return df[["chrom", "start", "stop", "read_id", "score", "strand", "sequence"]]
+
+
 # unit test
-if __name__ == "__main__":
-    # pt_ref = "/Users/zhaohuanan/zhaohn_HD/2.database/db_genomes/genome_fa/genome_ucsc_hg38/genome_ucsc_hg38.fa"
-    pt_ref = "/Users/zhaohuanan/zhaohn_HD/2.database/db_genomes/genome_fa/genome_ucsc_hg38/chr20.fa"
-    pt_bam = "/Users/zhaohuanan/zhaohn_HD/3.project/2021_DdCBE_topic/20210224_DetectSeq_all_bams/bam/293T-DdCBE-ND6-All-PD_rep1_hg38.MAPQ20.bam"
-    # test 1
-    # load_reference_fasta_as_dict(
-    #     ref_fasta_path=pt_ref, ref_name="All", log_verbose=logging.DEBUG
-    # )
-    # # test 2
-    # dt_ref = load_reference_fasta_as_dict(ref_fasta_path=pt_ref, ref_name=["chr20"])
-    # # test 3
-    # load_reference_fasta_as_dict(ref_fasta_path=pt_ref, ref_name=["chr20", "chrfaker"])
-    # # test 4
-    # load_reference_fasta_as_dict(
-    #     ref_fasta_path="nowhere", ref_name=["chr20", "chrfaker"]
-    # )
-    # test5
-    # bam_file = pysam.AlignmentFile(pt_bam, "rb")
+# if __name__ == "__main__":
