@@ -2,6 +2,7 @@ import logging
 import sys
 
 import pandas as pd
+from Bio import Seq, SeqIO
 
 
 def load_reference_fasta_as_dict(
@@ -108,7 +109,7 @@ def load_region_absolute_position(bowtie_table: str) -> pd.DataFrame:
             "chrom",  # chromosome
             "start",  # start (contain)
             "stop",  # stop (contain)
-            "read_id",  # region name
+            "region_id",  # region name
             "score",  # fake score
             "strand",  # strand
             "sequence",  # sequence (ref strand +)
@@ -118,7 +119,7 @@ def load_region_absolute_position(bowtie_table: str) -> pd.DataFrame:
         bowtie_table,
         sep="\t",
         names=[
-            "read_id",
+            "region_id",
             "strand",
             "chrom",
             "start",
@@ -129,8 +130,84 @@ def load_region_absolute_position(bowtie_table: str) -> pd.DataFrame:
         index_col=False,
     )
     df.insert(4, "stop", df["start"] + df.sequence.map(len), allow_duplicates=False)
-    return df[["chrom", "start", "stop", "read_id", "score", "strand", "sequence"]]
+    df.region_id = df.region_id.map(lambda x: x.split("(")[0])
+    return df[["chrom", "start", "stop", "region_id", "score", "strand", "sequence"]]
+
+
+def load_everybase_from_bowtie_table(
+    bowtie_table: str,
+    narrow_cutoff=10,
+    near_seq_extend=10,
+) -> pd.DataFrame:
+    if narrow_cutoff < near_seq_extend:
+        raise ValueError("Error: narrow_cutoff must >= near_seq_extend")
+
+    df = load_region_absolute_position(bowtie_table)
+
+    ls = []
+
+    for idx, df_row in df.iterrows():
+        region_id = df_row["region_id"]
+        chrom = df_row["chrom"]
+        start = df_row["start"] + 1
+        strand = df_row["strand"]
+        lens = len(df_row["sequence"])
+        genome_seq = df_row["sequence"]
+
+        for idx_seq, genome_base in enumerate(genome_seq):
+            if idx_seq < narrow_cutoff:
+                continue
+            elif lens - 1 - idx_seq < narrow_cutoff:
+                continue
+
+            if strand == "+":
+                relative_pos = idx_seq + 1
+                near_seq = Seq.Seq(
+                    genome_seq[idx_seq - near_seq_extend : idx_seq + near_seq_extend]
+                )
+            elif strand == "-":
+                relative_pos = lens - idx_seq
+                near_seq = Seq.Seq(
+                    genome_seq[idx_seq - near_seq_extend : idx_seq + near_seq_extend]
+                ).complement()
+            absolute_pos = start + idx_seq
+            ls.append(
+                [
+                    region_id,
+                    chrom,
+                    genome_base,
+                    relative_pos,
+                    absolute_pos,
+                    strand,
+                    near_seq,
+                ]
+            )
+    df_out = pd.DataFrame(
+        ls,
+        columns=[
+            "region_id",
+            "chrom",
+            "genome_base",
+            "relative_pos",
+            "absolute_pos",
+            "strand",
+            "near_seq",
+        ],
+    )
+    df_out["site_idx"] = df_out.chrom + ["_"] + df_out.absolute_pos.map(str)
+    df_out["sort_chrom"] = df_out.chrom.map(
+        lambda x: x.replace("chr", "")
+        .replace("X", "23")
+        .replace("Y", "24")
+        .replace("M", "25")
+    ).map(int)
+    df_out.sort_values(
+        by=["sort_chrom", "absolute_pos"], inplace=True, ignore_index=True
+    )
+    return df_out
 
 
 # unit test
-# if __name__ == "__main__":
+if __name__ == "__main__":
+    pt_aligninfo = "Bed2DetectSeqInfo/test.align.tsv"
+    load_everybase_from_bowtie_table(pt_aligninfo)
