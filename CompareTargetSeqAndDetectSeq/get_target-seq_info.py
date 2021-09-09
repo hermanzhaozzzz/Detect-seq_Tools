@@ -85,7 +85,7 @@ if __name__ == "__main__":
     ls_bmat = [os.path.join(pt_bmat, i) for i in os.listdir(pt_bmat) if "bmat" in i]
     # # TargetSeq-TREATMENT_x_REP_x_REGIONID_x_CUTOFF_x.bmat.gz
 
-    """ load bmat and merge """
+    # """ load bmat and merge """
     df_merge = pd.DataFrame()
     for path in ls_bmat:
         df = pd.read_csv(path, header=0, index_col=False, sep="\t", dtype=dt_type)
@@ -119,6 +119,10 @@ if __name__ == "__main__":
     df["treatment"] = df.bmat_name.map(
         lambda x: x.split("-TREATMENT_")[1].split("_REP_")[0]
     )
+    # form cutoff info
+    df["cutoff"] = df.bmat_name.map(
+        lambda x: int(x.split("_CUTOFF_")[1].split("_REGIONID_")[0])
+    )
 
     if df.isna().sum().sum() != 0:
         raise ValueError("bmat file name should be formated")
@@ -136,6 +140,7 @@ if __name__ == "__main__":
             "bmat_name",
             "rep",
             "treatment",
+            "cutoff",
         ]
     ].copy()
 
@@ -148,6 +153,7 @@ if __name__ == "__main__":
         id_vars=[
             "treatment",
             "rep",
+            "cutoff",
             "chr_name",
             "ref_base",
             "chr_index",
@@ -162,6 +168,7 @@ if __name__ == "__main__":
     df_bmat_melt.columns = [
         "treatment",
         "rep",
+        "cutoff",
         "region_id",
         "ref_base",
         "relative_pos",

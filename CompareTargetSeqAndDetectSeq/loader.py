@@ -129,15 +129,19 @@ def load_region_absolute_position(bowtie_table: str) -> pd.DataFrame:
         ],
         index_col=False,
     )
+    print(df[df.region_id == "ND6-only-2(+)"].sequence.values)
     df.insert(4, "stop", df["start"] + df.sequence.map(len), allow_duplicates=False)
     df.region_id = df.region_id.map(lambda x: x.split("(")[0])
+    df.start = df.start + 1
     return df[["chrom", "start", "stop", "region_id", "score", "strand", "sequence"]]
 
 
 def load_everybase_from_bowtie_table(
     bowtie_table: str,
-    narrow_cutoff=10,
-    near_seq_extend=10,
+    # narrow_cutoff=10,
+    # near_seq_extend=10,
+    narrow_cutoff=0,
+    near_seq_extend=0,
 ) -> pd.DataFrame:
     if narrow_cutoff < near_seq_extend:
         raise ValueError("Error: narrow_cutoff must >= near_seq_extend")
@@ -157,7 +161,7 @@ def load_everybase_from_bowtie_table(
         for idx_seq, genome_base in enumerate(genome_seq):
             if idx_seq < narrow_cutoff:
                 continue
-            elif lens - 1 - idx_seq < narrow_cutoff:
+            elif idx_seq > lens - narrow_cutoff:
                 continue
 
             if strand == "+":
@@ -170,7 +174,8 @@ def load_everybase_from_bowtie_table(
                 near_seq = Seq.Seq(
                     genome_seq[idx_seq - near_seq_extend : idx_seq + near_seq_extend]
                 ).complement()
-            absolute_pos = start + idx_seq
+                genome_base = Seq.Seq(genome_base).complement()
+            absolute_pos = start + idx_seq - 1
             ls.append(
                 [
                     region_id,
@@ -209,5 +214,12 @@ def load_everybase_from_bowtie_table(
 
 # unit test
 if __name__ == "__main__":
-    pt_aligninfo = "Bed2DetectSeqInfo/test.align.tsv"
-    load_everybase_from_bowtie_table(pt_aligninfo)
+    # pt_aligninfo = "Bed2DetectSeqInfo/test.align.tsv"
+    pt_aligninfo = "./test.align.tsv"
+    df = load_region_absolute_position(pt_aligninfo)
+    df[df.region_id == "ND6-only-2"]
+    len((df[df.region_id == "ND6-only-2"].sequence).values.tolist()[0])
+    df.loc[df.region_id == "ND6-only-2", "sequence"].values
+    df2 = load_everybase_from_bowtie_table(pt_aligninfo)
+    df2[df2.region_id == "ND6-only-2"]
+    df.loc[df.region_id == "ND6-only-2", "sequence"].values
