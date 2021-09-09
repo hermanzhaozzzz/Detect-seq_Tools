@@ -30,6 +30,7 @@ if __name__ == "__main__":
     # file list path
     pt_target = "../../20210908_DdCBE-target-seq-info.csv,"
     pt_detect = "../../20210908_DdCBE-detect-seq-info_ND4-Det_rep1.csv, ../../20210908_DdCBE-detect-seq-info_ND4-Det_rep2.csv,../../20210908_DdCBE-detect-seq-info_ND5-1-Det_rep1.csv,../../20210908_DdCBE-detect-seq-info_ND5-1-Det_rep2.csv,../../20210908_DdCBE-detect-seq-info_ND6-Det_rep1.csv,../../20210908_DdCBE-detect-seq-info_ND6-Det_rep2.csv"
+    pt_out = "../../20210909_DdCBE-Merged-info.csv"
     # deal with file list
     ls_target = [i.strip() for i in pt_target.split(",") if i.strip() != ""]
     ls_detect = [i.strip() for i in pt_detect.split(",") if i.strip() != ""]
@@ -66,3 +67,21 @@ if __name__ == "__main__":
     #         & (df_detect.relative_pos >= 15)
     #     ].genome_base
     # )
+
+    # merge detect-seq and target-seq
+    df = pd.merge(
+        left=df_target,
+        right=df_detect,
+        how="inner",
+        on=["rep", "region_id", "relative_pos"],
+        suffixes=("_TargetSeq", "_DetectSeq"),
+        indicator=True,
+    )
+
+    ifna = df.isna().sum().sum()
+
+    if ifna != 0:
+        logging.warn("{} NA values were found in merged table!".format(ifna))
+
+    logging.info("Merging done!")
+    df.to_csv(pt_out, sep=",", index=False, header=True)
