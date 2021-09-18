@@ -1,4 +1,5 @@
 import logging
+import math
 import os
 import sys
 
@@ -67,7 +68,18 @@ if __name__ == "__main__":
     #         & (df_detect.relative_pos >= 15)
     #     ].genome_base
     # )
-
+    # fix target rep3 to detect rep1
+    df_target["rep_back_target"] = pd.Series(dtype=object)
+    df_target.rep_back_target = df_target.rep
+    df_target.loc[df_target.rep == "rep3", "rep"] = "rep1"
+    df_target[df_target.rep_back_target == "rep3"]
+    # fix na
+    df_detect.fillna(0)
+    for col in df_detect[df_detect.A_ratio.map(math.isnan)][
+        ["A_ratio", "G_ratio", "C_ratio", "T_ratio"]
+    ]:
+        df_detect.loc[:, col] = 0
+    df_detect.isna().sum()
     # merge detect-seq and target-seq
     df = pd.merge(
         left=df_target,
@@ -77,11 +89,12 @@ if __name__ == "__main__":
         suffixes=("_TargetSeq", "_DetectSeq"),
         indicator=True,
     )
-
+    # check na
     ifna = df.isna().sum().sum()
 
     if ifna != 0:
         logging.warn("{} NA values were found in merged table!".format(ifna))
 
     logging.info("Merging done!")
+    df
     df.to_csv(pt_out, sep=",", index=False, header=True)

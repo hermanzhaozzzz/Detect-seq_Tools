@@ -169,12 +169,14 @@ def load_everybase_from_bowtie_table(
                 near_seq = Seq.Seq(
                     genome_seq[idx_seq - near_seq_extend : idx_seq + near_seq_extend]
                 )
+                region_seq = Seq.Seq(genome_seq)
             elif strand == "-":
                 relative_pos = lens - idx_seq
                 near_seq = Seq.Seq(
                     genome_seq[idx_seq - near_seq_extend : idx_seq + near_seq_extend]
                 ).complement()
                 genome_base = Seq.Seq(genome_base).complement()
+                region_seq = Seq.Seq(genome_seq).complement()
             absolute_pos = start + idx_seq - 1
             ls.append(
                 [
@@ -184,6 +186,7 @@ def load_everybase_from_bowtie_table(
                     relative_pos,
                     absolute_pos,
                     strand,
+                    region_seq,
                     near_seq,
                 ]
             )
@@ -196,6 +199,7 @@ def load_everybase_from_bowtie_table(
             "relative_pos",
             "absolute_pos",
             "strand",
+            "region_seq",
             "near_seq",
         ],
     )
